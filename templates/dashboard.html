@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>AI秘書ダッシュボード</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">総タスク数</h5>
+                <h2>{{ stats.total_tasks }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">進行中</h5>
+                <h2>{{ stats.in_progress_tasks }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">完了</h5>
+                <h2>{{ stats.completed_tasks }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">アクティブエージェント</h5>
+                <h2>{{ stats.active_agents }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>優先度順タスク</h5>
+            </div>
+            <div class="card-body">
+                {% for task in priority_tasks %}
+                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                    <div>
+                        <strong>{{ task.title }}</strong>
+                        <br>
+                        <small class="text-muted">{{ task.description[:100] }}...</small>
+                    </div>
+                    <div>
+                        {% if task.priority.value == 'critical' %}
+                            <span class="badge bg-danger">{{ task.priority.value.upper() }}</span>
+                        {% elif task.priority.value == 'high' %}
+                            <span class="badge bg-warning">{{ task.priority.value.upper() }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ task.priority.value.upper() }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>最近のタスク</h5>
+            </div>
+            <div class="card-body">
+                {% for task in recent_tasks %}
+                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                    <div>
+                        <strong>{{ task.title }}</strong>
+                        <br>
+                        <small class="text-muted">更新: {{ task.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    <div>
+                        {% if task.status.value == 'completed' %}
+                            <span class="badge bg-success">{{ task.status.value.upper() }}</span>
+                        {% elif task.status.value == 'in_progress' %}
+                            <span class="badge bg-primary">{{ task.status.value.upper() }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ task.status.value.upper() }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

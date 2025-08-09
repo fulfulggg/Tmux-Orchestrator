@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>タスク管理</h1>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form method="GET" class="d-flex">
+                    <select name="status" class="form-select me-2">
+                        <option value="all" {% if current_status == 'all' %}selected{% endif %}>全ステータス</option>
+                        <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>未着手</option>
+                        <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>進行中</option>
+                        <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>完了</option>
+                    </select>
+                    <select name="priority" class="form-select me-2">
+                        <option value="all" {% if current_priority == 'all' %}selected{% endif %}>全優先度</option>
+                        <option value="critical" {% if current_priority == 'critical' %}selected{% endif %}>緊急</option>
+                        <option value="high" {% if current_priority == 'high' %}selected{% endif %}>高</option>
+                        <option value="medium" {% if current_priority == 'medium' %}selected{% endif %}>中</option>
+                        <option value="low" {% if current_priority == 'low' %}selected{% endif %}>低</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">フィルタ</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>タイトル</th>
+                        <th>優先度</th>
+                        <th>ステータス</th>
+                        <th>担当者</th>
+                        <th>更新日時</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>
+                            <strong>{{ task.title }}</strong>
+                            <br>
+                            <small class="text-muted">{{ task.description[:100] }}...</small>
+                        </td>
+                        <td>
+                            {% if task.priority.value == 'critical' %}
+                                <span class="badge bg-danger">{{ task.priority.value.upper() }}</span>
+                            {% elif task.priority.value == 'high' %}
+                                <span class="badge bg-warning">{{ task.priority.value.upper() }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ task.priority.value.upper() }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if task.status.value == 'completed' %}
+                                <span class="badge bg-success">{{ task.status.value.upper() }}</span>
+                            {% elif task.status.value == 'in_progress' %}
+                                <span class="badge bg-primary">{{ task.status.value.upper() }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ task.status.value.upper() }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ task.assignee or '未割り当て' }}</td>
+                        <td>{{ task.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
